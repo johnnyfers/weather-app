@@ -6,8 +6,8 @@ export default function UnitsPicker({ unitsSystem, setUnitsSystem }) {
     return (
         <View style={styles.unitsSystem}>
             <Picker selectedValue={unitsSystem} onValueChange={(item) => setUnitsSystem(item)}>
-                <Picker.item label="C°" value="metric" />
-                <Picker.item label="F°" value="imperial" />
+                <Picker label="C°" value="metric" />
+                <Picker label="F°" value="imperial" />
             </Picker>
         </View>
     )

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TextInput } from 'react-native'
-import { RectButton, RectButtonProps } from 'react-native-gesture-handler'
+import { View, Text, TextInput } from 'react-native'
+import { RectButton } from 'react-native-gesture-handler'
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { GEO_API_KEY } from 'react-native-dotenv'
@@ -17,7 +17,6 @@ export default function City() {
     const { cities } = useSelector((state) => state.city)
 
     const [errorMessage, setErrorMEssage] = useState()
-    const [data, setData] = useState()
     const [cityName, setCityName] = useState()
 
     function cityNameInputHandler(value) {
@@ -25,47 +24,59 @@ export default function City() {
     }
 
     async function fetchDataByCityName() {
-        const cityUrl = `${BASE_WEATHER_URL}q=${cityName}&key=${GEO_API_KEY}`
+        try {
+            const cityUrl = `${BASE_WEATHER_URL}q=${cityName}&key=${GEO_API_KEY}`
 
-        const response = await fetch(cityUrl)
-        const result = await response.json()
+            const response = await fetch(cityUrl)
+            const result = await response.json()
 
+            if (result.status.message == 'OK') {
+                dispatch(citiesActions.addCityToArray({
+                    data:
+                    {
+                        city: cityName,
+                        code: result.results[0].components.state_code,
+                        country: result.results[0].components.country
+                    }
+                }))
 
-        if (result.status.message == 'OK') {
-            setData({
-                city: cityName,
-                code: result.results[0].components.state_code,
-                country: result.results[0].components.country
-            })
-
-            dispatch(citiesActions.addCityToArray({ data }))
+                console.log(cities)
+            }
+        } catch (err) {
+            console.log(err)
         }
     }
 
     async function fetchDataByLatLong() {
-        let { status } = await Location.requestForegroundPermissionsAsync()
+        try {
+            let { status } = await Location.requestForegroundPermissionsAsync()
 
-        if (status !== 'granted') {
-            setErrorMessage('Access to location is needed to run the app')
-            return
-        }
+            if (status !== 'granted') {
+                setErrorMessage('Access to location is needed to run the app')
+                return
+            }
 
-        const location = await Location.getCurrentPositionAsync()
-        const { latitude, longitude } = location.coords
+            const location = await Location.getCurrentPositionAsync()
+            const { latitude, longitude } = location.coords
 
-        const cityUrl = `${BASE_WEATHER_URL}q=${latitude}+${longitude}&key=${GEO_API_KEY}`
+            const cityUrl = `${BASE_WEATHER_URL}q=${latitude}+${longitude}&key=${GEO_API_KEY}`
 
-        const response = await fetch(cityUrl)
-        const result = await response.json()
+            const response = await fetch(cityUrl)
+            const result = await response.json()
 
-        if (result.status.message == 'OK') {
-            setData({
-                city: result.results[0].components.city,
-                code: result.results[0].components.state_code,
-                country: result.results[0].components.country
-            })
+            if (result.status.message == 'OK') {
 
-            dispatch(citiesActions.addCityToArray({ data }))
+                dispatch(citiesActions.addCityToArray({
+                    data:
+                    {
+                        city: result.results[0].components.city,
+                        code: result.results[0].components.state_code,
+                        country: result.results[0].components.country
+                    }
+                }))
+            }
+        } catch (err) {
+            console.log(err)
         }
     }
 
@@ -120,9 +131,15 @@ export default function City() {
 
                 <Text style={styles.searches}>Previous Searches</Text>
 
-                {cities.length > 0 && cities.map((city) => {
-                    
-                })}
+                <View>
+                    {cities.length > 0 && cities.map((item) => {
+                        <CityItem
+                            city={item.city}
+                            code={item.code}
+                            country={item.country}
+                        />
+                    })}
+                </View>
 
             </View>
         </View>

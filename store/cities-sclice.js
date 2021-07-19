@@ -9,9 +9,9 @@ const citiesSlice = createSlice({
         addCityToArray(state, action) {
             const data = action.payload.data
             
-            if (state.cities.length == 3) {
+            if (state.cities.length === 3) {
                 state.cities.shift()
-            }s
+            }
             state.cities.push(data)
         }
     }

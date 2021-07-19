@@ -1,28 +1,90 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, StyleSheet, TextInput } from 'react-native'
 import { RectButton, RectButtonProps } from 'react-native-gesture-handler'
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import * as Location from 'expo-location';
+import { GEO_API_KEY } from 'react-native-dotenv'
+import { useDispatch, useSelector } from 'react-redux';
+import { citiesActions } from '../store/cities-sclice'
 
 import { colors } from '../utils/index'
+import { styles } from './styles'
+
+const BASE_WEATHER_URL = 'https://api.opencagedata.com/geocode/v1/json?'
 
 export default function City() {
+    const dispatch = useDispatch()
+    const { cities } = useSelector((state) => state.city)
 
-    const CityItem = () => {
+    const [errorMessage, setErrorMEssage] = useState()
+    const [data, setData] = useState()
+    const [cityName, setCityName] = useState()
+
+    function cityNameInputHandler(value) {
+        setCityName(value)
+    }
+
+    async function fetchDataByCityName() {
+        const cityUrl = `${BASE_WEATHER_URL}q=${cityName}&key=${GEO_API_KEY}`
+
+        const response = await fetch(cityUrl)
+        const result = await response.json()
+
+
+        if (result.status.message == 'OK') {
+            setData({
+                city: cityName,
+                code: result.results[0].components.state_code,
+                country: result.results[0].components.country
+            })
+
+            dispatch(citiesActions.addCityToArray({ data }))
+        }
+    }
+
+    async function fetchDataByLatLong() {
+        let { status } = await Location.requestForegroundPermissionsAsync()
+
+        if (status !== 'granted') {
+            setErrorMessage('Access to location is needed to run the app')
+            return
+        }
+
+        const location = await Location.getCurrentPositionAsync()
+        const { latitude, longitude } = location.coords
+
+        const cityUrl = `${BASE_WEATHER_URL}q=${latitude}+${longitude}&key=${GEO_API_KEY}`
+
+        const response = await fetch(cityUrl)
+        const result = await response.json()
+
+        if (result.status.message == 'OK') {
+            setData({
+                city: result.results[0].components.city,
+                code: result.results[0].components.state_code,
+                country: result.results[0].components.country
+            })
+
+            dispatch(citiesActions.addCityToArray({ data }))
+        }
+    }
+
+    const CityItem = (city, code, country) => {
         return (
-        <View style={styles.card}>
-            <View style={styles.insideCard}>
-                <View>
-                    <Text style={styles.textMain}>
-                        Rio de Janeiro
-                    </Text>
-                    <Text>
-                        RJ, Brazil
-                    </Text>
-                </View>
+            <View style={styles.card}>
+                <View style={styles.insideCard}>
+                    <View>
+                        <Text style={styles.textMain}>
+                            {city}
+                        </Text>
+                        <Text>
+                            {code}, {country}
+                        </Text>
+                    </View>
 
-                <Ionicons name="ios-arrow-forward" size={34} color={colors.PRIMARY_COLOR} />
-            </View>
-        </View>)
+                    <Ionicons name="ios-arrow-forward" size={34} color={colors.PRIMARY_COLOR} />
+                </View>
+            </View>)
     }
 
     return (
@@ -34,107 +96,35 @@ export default function City() {
 
                 <Text style={styles.subtitle}>Type your location here: </Text>
 
-                <TextInput style={styles.input} />
+                <TextInput
+                    style={styles.input}
+                    onChangeText={cityNameInputHandler}
+                />
 
                 <View style={styles.buttons}>
-                    <RectButton activeOpacity={0.7} style={styles.button}>
+                    <RectButton
+                        activeOpacity={0.7}
+                        style={styles.button}
+                        onPress={fetchDataByCityName}
+                    >
                         <Text style={styles.buttonText}>Submit</Text>
                     </RectButton>
-                    <RectButton activeOpacity={0.7} style={styles.button}>
+                    <RectButton
+                        activeOpacity={0.7}
+                        style={styles.button}
+                        onPress={fetchDataByLatLong}
+                    >
                         <MaterialCommunityIcons name="target" size={34} color="white" />
                     </RectButton>
                 </View>
 
                 <Text style={styles.searches}>Previous Searches</Text>
 
-                {CityItem()}
-                {CityItem()}
-                {CityItem()}
+                {cities.length > 0 && cities.map((city) => {
+                    
+                })}
+
             </View>
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        top: 40,
-        flex: 1,
-        justifyContent: 'space-between',
-        paddingHorizontal: 20
-    },
-    title: {
-        justifyContent: 'center',
-        width: '120%',
-        height: 50,
-        borderColor: colors.BORDER_COLOR,
-        borderBottomWidth: 3,
-        marginBottom: 10,
-        marginHorizontal: -20,
-        paddingHorizontal: 20
-    },
-    titleText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: 'gray',
-    },
-    subtitle: {
-        fontSize: 20,
-        marginBottom: 30
-    },
-    input: {
-        padding: 10,
-        color: 'gray',
-        width: '100%',
-        height: 50,
-        borderWidth: 0.5,
-        borderColor: colors.BORDER_COLOR,
-        borderRadius: 8,
-        fontSize: 17,
-        fontWeight: '600',
-        marginBottom: 15
-    },
-    buttons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 30
-
-    },
-    button: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 140,
-        height: 60,
-        borderRadius: 8,
-        backgroundColor: colors.PRIMARY_COLOR
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 17,
-        fontWeight: 'bold'
-    },
-    searches: {
-        fontSize: 27,
-        fontWeight: 'bold',
-        marginBottom: 15
-    },
-    card:{
-        width: '100%',
-        backgroundColor: colors.BORDER_COLOR,
-        borderRadius: 8,
-        padding: 20,
-        marginBottom: 10
-    },
-    insideCard: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 14,
-        borderLeftWidth: 3,
-        borderLeftColor: colors.PRIMARY_COLOR,
-    },
-    textMain: {
-        fontSize: 18,
-        fontWeight: '600',
-        marginBottom: 5
-    }
-})

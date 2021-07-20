@@ -80,7 +80,7 @@ export default function City() {
         }
     }
 
-    const CityItem = (city, code, country) => {
+    const CityItem = ({ city, code, country }) => {
         return (
             <View style={styles.card}>
                 <View style={styles.insideCard}>
@@ -132,13 +132,13 @@ export default function City() {
                 <Text style={styles.searches}>Previous Searches</Text>
 
                 <View>
-                    {cities.length > 0 && cities.map((item) => {
+                    {cities.length > 0 && cities.map((item) =>
                         <CityItem
                             city={item.city}
                             code={item.code}
                             country={item.country}
                         />
-                    })}
+                    )}
                 </View>
 
             </View>

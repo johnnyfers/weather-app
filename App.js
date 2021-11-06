@@ -22,7 +22,7 @@ export default function App() {
             }
           }}
         >
-          <Screen name='Home' component={Weather} />
+          <Screen name='Weather' component={Weather} />
           <Screen name='City' component={City} />
         </Navigator>
       </NavigationContainer>

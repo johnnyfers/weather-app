@@ -30,7 +30,7 @@ export default function City() {
             data: { latitude, longitude}
         }))
 
-        return navigation.navigate('Home')
+        return navigation.navigate('Weather')
     }
 
     function cityNameInputHandler(value) {

@@ -1,6 +1,8 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View } from 'react-native'
 import { Picker } from '@react-native-community/picker'
+
+import { styles } from './styles'
 
 export default function UnitsPicker({ unitsSystem, setUnitsSystem }) {
     return (
@@ -14,12 +16,3 @@ export default function UnitsPicker({ unitsSystem, setUnitsSystem }) {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    unitsSystem: {
-        position: 'absolute',
-        top: 0,
-        height: 50,
-        width: 100
-    }
-})

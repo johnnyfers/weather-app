@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { Text, View, ActivityIndicator } from 'react-native';
 import * as Location from 'expo-location';
 import WeatherInfo from '../../components/WeatherInfo';
 import UnitsPicker from '../../components/UnitsPicker'
@@ -9,6 +9,7 @@ import ReloadIcon from '../../components/ReloadIcon'
 import WeatherDetails from '../../components/WeatherDetails'
 import { WEATHER_API_KEY } from 'react-native-dotenv'
 import { useSelector } from 'react-redux';
+import { styles } from './styles'
 
 const BASE_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather?'
 
@@ -16,6 +17,7 @@ export default function Weather(props) {
   const [errorMessage, setErrorMessage] = useState(null)
   const [currentWeather, setCurrentWeather] = useState(null)
   const [unitsSystem, setUnitsSystem] = useState('metric')
+
   const { geo } = useSelector((state) => state.weather)
 
   useEffect(() => {
@@ -91,13 +93,3 @@ export default function Weather(props) {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  main: {
-    justifyContent: 'center',
-    flex: 1
-  }
-});

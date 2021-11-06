@@ -4,6 +4,11 @@
 
 ### Screenshots
 
+<img align="left" src="sreenshot1"></img>
+<img align="center" src="sreenshot2"></img>
+<img align="right" src="sreenshot3"></img>
+
+
 ### How to run
 
 - yarn

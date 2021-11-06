@@ -6,16 +6,13 @@ import * as Location from 'expo-location';
 import { GEO_API_KEY } from 'react-native-dotenv'
 import { useDispatch, useSelector } from 'react-redux';
 import { citiesActions } from '../../store/cities-sclice'
-import { weatherActions } from '../../store/weather-slice'
-import { useNavigation } from '@react-navigation/native'
-
+import { CityItem} from '../../components/CityItem/index'
 import { colors } from '../../utils/index'
 import { styles } from './styles'
 
 const BASE_WEATHER_URL = 'https://api.opencagedata.com/geocode/v1/json?'
 
 export default function City() {
-    const navigation = useNavigation()
     const dispatch = useDispatch()
     
     const { cities } = useSelector((state) => state.city)
@@ -23,15 +20,6 @@ export default function City() {
     const [errorMessage, setErrorMEssage] = useState()
     const [cityName, setCityName] = useState()
 
-    function handleSignIn(latitude, longitude) {
-        console.log(latitude, longitude)
-
-        dispatch(weatherActions.setGeo({
-            data: { latitude, longitude}
-        }))
-
-        return navigation.navigate('Weather')
-    }
 
     function cityNameInputHandler(value) {
         setCityName(value)
@@ -98,24 +86,6 @@ export default function City() {
         } catch (err) {
             console.log(err)
         }
-    }
-
-    const CityItem = ({ city, code, country, latitude, longitude}) => {
-        return (
-            <View style={styles.card}>
-                <View style={styles.insideCard}>
-                    <View>
-                        <Text style={styles.textMain}>
-                            {city}
-                        </Text>
-                        <Text>
-                            {code}, {country}
-                        </Text>
-                    </View>
-
-                    <Ionicons onPress={() => handleSignIn(latitude, longitude)} name="ios-arrow-forward" size={34} color={colors.PRIMARY_COLOR} />
-                </View>
-            </View>)
     }
 
     return (

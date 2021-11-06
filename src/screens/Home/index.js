@@ -27,14 +27,12 @@ export default function Home() {
 
                 <View style={styles.content} >
                     <Text style={styles.title} >
-                        Descubra {`\n`}
-                        o clima de qualquer cidade {`\n`}
-                        do mundo
+                        Weather App {`\n`}
                     </Text>
 
                     <Text style={styles.subtitle} >
-                        Pesquise por qualquer cidade {`\n`}
-                        que possa imaginar
+                        Search for any city {`\n`}
+                        you can imagine
                     </Text>
                 </View>
                 <RectButton
@@ -46,7 +44,7 @@ export default function Home() {
                     </Text>
                 </RectButton>
                 <ScrollView>
-                    <Text style={styles.scrollTitle}>As 5 maiores cidades do brasil</Text>
+                    <Text style={styles.scrollTitle}>Largest cities In Brazil</Text>
                     <FeedCitites/>
                 </ScrollView>
             </ScrollView>

@@ -5,19 +5,33 @@ import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { GEO_API_KEY } from 'react-native-dotenv'
 import { useDispatch, useSelector } from 'react-redux';
-import { citiesActions } from '../store/cities-sclice'
+import { citiesActions } from '../../store/cities-sclice'
+import { weatherActions } from '../../store/weather-slice'
+import { useNavigation } from '@react-navigation/native'
 
-import { colors } from '../utils/index'
+import { colors } from '../../utils/index'
 import { styles } from './styles'
 
 const BASE_WEATHER_URL = 'https://api.opencagedata.com/geocode/v1/json?'
 
 export default function City() {
+    const navigation = useNavigation()
     const dispatch = useDispatch()
+    
     const { cities } = useSelector((state) => state.city)
 
     const [errorMessage, setErrorMEssage] = useState()
     const [cityName, setCityName] = useState()
+
+    function handleSignIn(latitude, longitude) {
+        console.log(latitude, longitude)
+
+        dispatch(weatherActions.setGeo({
+            data: { latitude, longitude}
+        }))
+
+        return navigation.navigate('Home')
+    }
 
     function cityNameInputHandler(value) {
         setCityName(value)
@@ -30,13 +44,17 @@ export default function City() {
             const response = await fetch(cityUrl)
             const result = await response.json()
 
+            console.log(result)
+
             if (result.status.message == 'OK') {
                 dispatch(citiesActions.addCityToArray({
                     data:
                     {
                         city: cityName,
                         code: result.results[0].components.state_code,
-                        country: result.results[0].components.country
+                        country: result.results[0].components.country,
+                        latitude: result.results[0].geometry.lat,
+                        longitude: result.results[0].geometry.lng
                     }
                 }))
 
@@ -52,7 +70,7 @@ export default function City() {
             let { status } = await Location.requestForegroundPermissionsAsync()
 
             if (status !== 'granted') {
-                setErrorMessage('Access to location is needed to run the app')
+                setErrorMEssage('Access to location is needed to run the app')
                 return
             }
 
@@ -71,7 +89,9 @@ export default function City() {
                     {
                         city: result.results[0].components.city,
                         code: result.results[0].components.state_code,
-                        country: result.results[0].components.country
+                        country: result.results[0].components.country,
+                        latitude: result.results[0].geometry.lat,
+                        longitude: result.results[0].geometry.lng
                     }
                 }))
             }
@@ -80,7 +100,7 @@ export default function City() {
         }
     }
 
-    const CityItem = ({ city, code, country }) => {
+    const CityItem = ({ city, code, country, latitude, longitude}) => {
         return (
             <View style={styles.card}>
                 <View style={styles.insideCard}>
@@ -93,7 +113,7 @@ export default function City() {
                         </Text>
                     </View>
 
-                    <Ionicons name="ios-arrow-forward" size={34} color={colors.PRIMARY_COLOR} />
+                    <Ionicons onPress={() => handleSignIn(latitude, longitude)} name="ios-arrow-forward" size={34} color={colors.PRIMARY_COLOR} />
                 </View>
             </View>)
     }
@@ -134,9 +154,12 @@ export default function City() {
                 <View>
                     {cities.length > 0 && cities.map((item) =>
                         <CityItem
+                            key={Math.random()}
                             city={item.city}
                             code={item.code}
                             country={item.country}
+                            latitude={item.latitude}
+                            longitude={item.longitude}
                         />
                     )}
                 </View>

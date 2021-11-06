@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import {colors} from '../utils/index'
+import { colors } from '../../utils/index'
 
 export const styles = StyleSheet.create({
     container: {
@@ -63,7 +63,7 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 15
     },
-    card:{
+    card: {
         width: '100%',
         backgroundColor: colors.BORDER_COLOR,
         borderRadius: 8,

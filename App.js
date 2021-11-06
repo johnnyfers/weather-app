@@ -4,9 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'react-redux'
 
-import City from './components/City'
-import Weather from './components/Weather'
-import { store } from './store/index'
+import City from './src/screens/City'
+import Weather from './src/screens/Weather'
+import { store } from './src/store/index'
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -27,6 +27,5 @@ export default function App() {
         </Navigator>
       </NavigationContainer>
     </Provider>
-
   )
 }

@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
 import { weatherActions } from '../../store/weather-slice'
 import { useNavigation } from '@react-navigation/native'
+import { RectButton } from 'react-native-gesture-handler'
 
 import { colors } from '../../utils/index'
 import { styles } from './styles'
@@ -23,7 +24,9 @@ export function CityItem(props) {
     }
 
     return (
-        <View style={styles.card}>
+        <RectButton
+            onPress={() => handleSignIn(props.latitude, props.longitude)}
+            style={styles.card}>
             <View style={styles.insideCard}>
                 <View>
                     <Text style={styles.textMain}>
@@ -34,7 +37,7 @@ export function CityItem(props) {
                     </Text>
                 </View>
 
-                <Ionicons onPress={() => handleSignIn(props.latitude, props.longitude)} name="ios-arrow-forward" size={34} color={colors.PRIMARY_COLOR} />
+                <Ionicons name="ios-arrow-forward" size={34} color={colors.PRIMARY_COLOR} />
             </View>
-        </View>)
+        </RectButton>)
 }

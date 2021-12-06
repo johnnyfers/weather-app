@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect }  from 'react'
 import {
     View,
     Text,
@@ -13,9 +13,29 @@ import { FeedCitites } from '../../components/FeedCitites/index'
 
 export default function Home() {
     const navigation = useNavigation()
+
     function handleSignIn() {
         navigation.navigate('Weather')
     }
+
+    const [feedCitites, setFeedCitites] = useState()
+
+    async function fetchData(){
+        try{
+        const cityUrl = 'http://192.168.0.101:3333/cities?country=USA'
+
+        const response = await fetch(cityUrl)
+        const results = await response.json()
+
+        setFeedCitites(results)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    
+    useEffect(() => {
+        fetchData()
+    })
 
     return (
         <View style={styles.container}>
@@ -44,8 +64,8 @@ export default function Home() {
                     </Text>
                 </RectButton>
                 <ScrollView>
-                    <Text style={styles.scrollTitle}>Largest cities In Brazil</Text>
-                    <FeedCitites/>
+                    <Text style={styles.scrollTitle}>Largest cities In USA</Text>
+                    <FeedCitites feedCitites={feedCitites}/>
                 </ScrollView>
             </ScrollView>
         </View>

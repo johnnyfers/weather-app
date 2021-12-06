@@ -6,15 +6,14 @@ import * as Location from 'expo-location';
 import { GEO_API_KEY } from 'react-native-dotenv'
 import { useDispatch, useSelector } from 'react-redux';
 import { citiesActions } from '../../store/cities-sclice'
-import { CityItem} from '../../components/CityItem/index'
-import { colors } from '../../utils/index'
+import { CityItem } from '../../components/CityItem/index'
 import { styles } from './styles'
 
-const BASE_WEATHER_URL = 'https://api.opencagedata.com/geocode/v1/json?'
+const BASE_WEATHER_URL = 'http://192.168.0.101:3333/cities'
 
 export default function City() {
     const dispatch = useDispatch()
-    
+
     const { cities } = useSelector((state) => state.city)
 
     const [errorMessage, setErrorMEssage] = useState()
@@ -27,27 +26,27 @@ export default function City() {
 
     async function fetchDataByCityName() {
         try {
-            const cityUrl = `${BASE_WEATHER_URL}q=${cityName}&key=${GEO_API_KEY}`
+            const cityUrl = `${BASE_WEATHER_URL}?name=${cityName}`
 
             const response = await fetch(cityUrl)
-            const result = await response.json()
+            const results = await response.json()
 
-            console.log(result)
+            console.log('result >> ', results)
 
-            if (result.status.message == 'OK') {
-                dispatch(citiesActions.addCityToArray({
-                    data:
-                    {
-                        city: cityName,
-                        code: result.results[0].components.state_code,
-                        country: result.results[0].components.country,
-                        latitude: result.results[0].geometry.lat,
-                        longitude: result.results[0].geometry.lng
-                    }
-                }))
 
-                console.log(cities)
-            }
+            dispatch(citiesActions.addCityToArray({
+                data:
+                {
+                    city: cityName,
+                    code: results[0].state_code,
+                    country: results[0].country,
+                    latitude: results[0].lat,
+                    longitude: results[0].lng
+                }
+            }))
+
+            console.log(cities)
+
         } catch (err) {
             console.log(err)
         }
@@ -70,16 +69,16 @@ export default function City() {
             const response = await fetch(cityUrl)
             const result = await response.json()
 
-            if (result.status.message == 'OK') {
+            if (status.message == 'OK') {
 
                 dispatch(citiesActions.addCityToArray({
                     data:
                     {
-                        city: result.results[0].components.city,
-                        code: result.results[0].components.state_code,
-                        country: result.results[0].components.country,
-                        latitude: result.results[0].geometry.lat,
-                        longitude: result.results[0].geometry.lng
+                        city: results[0].components.city,
+                        code: results[0].components.state_code,
+                        country: results[0].components.country,
+                        latitude: results[0].geometry.lat,
+                        longitude: results[0].geometry.lng
                     }
                 }))
             }

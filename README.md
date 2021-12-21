@@ -14,6 +14,3 @@
 - yarn
 - setup .env file
 - yarn start
-
-
-Rep: https://github.com/johnnyfers/wether-app

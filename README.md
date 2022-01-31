@@ -4,9 +4,9 @@
 
 ### Screenshots
 
-<img align="left" src="sreenshot1"></img>
-<img align="center" src="sreenshot2"></img>
-<img align="right" src="sreenshot3"></img>
+<img height="489em" src="sreenshot1.jpeg"></img>
+<img height="489em"  src="sreenshot2.jpeg"></img>
+<img height="489em" src="sreenshot3.jpeg"></img>
 
 
 ### How to run

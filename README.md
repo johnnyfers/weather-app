@@ -1,6 +1,6 @@
 # Wether App
 
-### Search for any city in the world and find out it's weather!
+### Search for any city in the world and find out its weather!
 
 ### Screenshots
 
